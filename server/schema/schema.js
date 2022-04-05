@@ -1,15 +1,6 @@
 const graphql = require('graphql');
 const _ = require('lodash');
-// const {
-//   Book,
-//   Genre,
-//   Year,
-//   Author,
-//   Publisher,
-//   Read,
-//   ISBN,
-//   Ebook,
-// } = require('./models');
+
 const Book = require('../models/book');
 const Author = require('../models/author');
 
