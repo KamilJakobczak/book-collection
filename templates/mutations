@@ -1,0 +1,24 @@
+mutation{
+  addBook(
+  title:"Wyniosłe wieże",
+  language: "polish",
+  genre: "reportaż",
+  pages: 648,
+  authorId: "624ab3f28964497ba29c7716",
+  publisherId: "62472546557c03d34db6f79e",
+  rating: ,
+  ebook: true,
+  isbn: "9788380496712",
+  firstEdition: 2018,
+  myEdition: 2022,
+  read: false,
+  buyPrice: 1652
+  )
+}
+
+mutation{
+addAuthor(
+name: "Lawrence Wright",
+nationality: "american",
+birthDate: 1947)
+}
