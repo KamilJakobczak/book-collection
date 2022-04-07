@@ -14,3 +14,21 @@ export const LOAD_BOOKS = gql`
     }
   }
 `;
+
+export const LOAD_AUTHORS = gql`
+  {
+    authors {
+      name
+      id
+    }
+  }
+`;
+
+export const LOAD_PUBLISHERS = gql`
+  {
+    publishers {
+      name
+      id
+    }
+  }
+`;

@@ -5,24 +5,24 @@ export const ADD_BOOK = gql`
     $title: String!
     $language: String!
     $genre: String!
-    $pages: Number!
-    $author: ID!
-    $publisher: ID!
-    $rating: Number!
-    $ebook: Boolean!
+    $pages: Int!
+    $authorId: ID!
+    $publisherId: ID!
+    $rating: Int!
+    $ebook: String!
     $isbn: String!
-    $firstEdition: Number!
-    $myEdition: Number!
-    $read: Boolean!
-    $buyPrice: Number!
+    $firstEdition: Int!
+    $myEdition: Int!
+    $read: String!
+    $buyPrice: Int!
   ) {
     addBook(
       title: $title
       language: $language
       genre: $genre
       pages: $pages
-      authorId: $author
-      publisherId: $publisher
+      authorId: $authorId
+      publisherId: $publisherId
       rating: $rating
       ebook: $ebook
       isbn: $isbn

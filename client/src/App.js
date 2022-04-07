@@ -7,7 +7,7 @@ import {
   from,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import Form from './script/componenets/Form';
+import AddBook from './script/componenets/AddBook';
 
 const errorLink = onError(({ graphqlErrors, networkError }) => {
   if (graphqlErrors) {
@@ -34,7 +34,7 @@ function App() {
         <header className='App-header'>
           <h1>Jamar's Book Collection</h1>
           <GetBookList />
-          <Form />
+          <AddBook />
         </header>
       </div>
     </ApolloProvider>

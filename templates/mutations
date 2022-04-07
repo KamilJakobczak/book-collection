@@ -22,3 +22,19 @@ name: "Lawrence Wright",
 nationality: "american",
 birthDate: 1947)
 }
+
+
+setTitle('')
+setLanguage('')
+setGenre('')
+setPages('')
+setAuthorId('')
+setPublisherId('')
+setRating('')
+setEbook('')
+setIsbn('')
+setFirstEdition('')
+setMyEdition('')
+setRead('')
+setCurrency('')
+setBuyPrice('')

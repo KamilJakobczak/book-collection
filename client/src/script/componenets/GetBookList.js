@@ -12,7 +12,7 @@ function GetBookList() {
       setBooks(data.books);
     }
   }, [data]);
-  console.log(books);
+  // console.log(books);
   // books.sort(function (a, b) {
   //   if (a.title.toLowerCase() < b.title.toLowerCase()) return -1;
   //   if (a.title.toLowerCase() > b.title.toLowerCase()) return 1;

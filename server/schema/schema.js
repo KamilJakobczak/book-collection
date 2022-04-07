@@ -33,6 +33,12 @@ const RootQuery = new GraphQLObjectType({
         return Author.findById(args.id);
       },
     },
+    authors: {
+      type: new GraphQLList(AuthorType),
+      resolve(parent, args) {
+        return Author.find({});
+      },
+    },
     books: {
       type: new GraphQLList(BookType),
       resolve(parent, args) {
@@ -85,11 +91,12 @@ const Mutation = new GraphQLObjectType({
         authorId: { type: GraphQLID },
         publisherId: { type: GraphQLID },
         rating: { type: GraphQLInt },
-        ebook: { type: GraphQLBoolean },
+        ebook: { type: GraphQLString },
         isbn: { type: GraphQLString },
         firstEdition: { type: GraphQLInt },
         myEdition: { type: GraphQLInt },
-        read: { type: GraphQLBoolean },
+        read: { type: GraphQLString },
+        currency: { type: GraphQLString },
         buyPrice: { type: GraphQLInt },
       },
       resolve(parent, args) {
@@ -106,6 +113,7 @@ const Mutation = new GraphQLObjectType({
           firstEdition: args.firstEdition,
           myEdition: args.myEdition,
           read: args.read,
+          currency: args.currency,
           buyPrice: args.buyPrice,
         });
         return book.save();

@@ -10,7 +10,7 @@ const bookSchema = new Schema({
   publisherId: String,
   rating: Number,
   ebook: Boolean,
-  isbn: Number,
+  isbn: String,
   firstEdition: Number,
   myEdition: Number,
   read: Boolean,
