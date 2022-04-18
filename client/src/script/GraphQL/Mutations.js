@@ -13,7 +13,7 @@ export const ADD_BOOK = gql`
     $isbn: String!
     $firstEdition: Int!
     $myEdition: Int!
-    $read: String!
+    $cover: String!
     $buyPrice: Int!
   ) {
     addBook(
@@ -28,10 +28,35 @@ export const ADD_BOOK = gql`
       isbn: $isbn
       firstEdition: $firstEdition
       myEdition: $myEdition
-      read: $read
+      cover: $cover
       buyPrice: $buyPrice
     ) {
       title
+    }
+  }
+`;
+export const ADD_AUTHOR = gql`
+  mutation addAuthor($name: String!, $nationality: String!, $birthDate: Int!) {
+    addAuthor(name: $name, nationality: $nationality, birthDate: $birthDate) {
+      name
+    }
+  }
+`;
+
+export const ADD_PUBLISHER = gql`
+  mutation addPublisher(
+    $name: String!
+    $address: String!
+    $city: String!
+    $website: String!
+  ) {
+    addPublisher(
+      name: $name
+      address: $address
+      city: $city
+      website: $website
+    ) {
+      name
     }
   }
 `;

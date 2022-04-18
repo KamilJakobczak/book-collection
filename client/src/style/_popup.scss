@@ -1,0 +1,36 @@
+.popUp {
+  position: absolute;
+  top: 5%;
+  bottom: 5%;
+  left: 5%;
+  right: 5%;
+  background-color: grey;
+
+  div.popUp_forms {
+    form.addAuthor {
+      div.form_element {
+        label {
+        }
+        input {
+        }
+      }
+      button {
+      }
+    }
+    form.addPublisher {
+      .form_element {
+        label {
+        }
+        input {
+        }
+      }
+      button {
+      }
+    }
+  }
+  button.popUp_closeButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+}

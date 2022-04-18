@@ -8,6 +8,7 @@ import {
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
 import AddBook from './script/componenets/AddBook';
+import PopUp from './script/componenets/PopUp';
 
 const errorLink = onError(({ graphqlErrors, networkError }) => {
   if (graphqlErrors) {
@@ -33,9 +34,11 @@ function App() {
       <div className='App'>
         <header className='App-header'>
           <h1>Jamar's Book Collection</h1>
-          <GetBookList />
-          <AddBook />
         </header>
+        <main>
+          {/* <GetBookList /> */}
+          <AddBook />
+        </main>
       </div>
     </ApolloProvider>
   );

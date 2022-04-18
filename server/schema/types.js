@@ -53,11 +53,13 @@ const BookType = new GraphQLObjectType({
       },
     },
     rating: { type: GraphQLInt },
-    ebook: { type: GraphQLBoolean },
+    cover: { type: GraphQLString },
     isbn: { type: GraphQLString },
     firstEdition: { type: GraphQLInt },
     myEdition: { type: GraphQLInt },
-    read: { type: GraphQLBoolean },
+    status: { type: GraphQLString },
+    currency: { type: GraphQLString },
+    buyPrice: { type: GraphQLInt },
   }),
 });
 

@@ -9,11 +9,12 @@ const bookSchema = new Schema({
   pages: Number,
   publisherId: String,
   rating: Number,
-  ebook: Boolean,
+  cover: String,
   isbn: String,
   firstEdition: Number,
   myEdition: Number,
-  read: Boolean,
+  status: String,
+  currency: String,
   buyPrice: Number,
 });
 
