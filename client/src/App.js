@@ -1,4 +1,3 @@
-import GetBookList from './script/componenets/GetBookList';
 import {
   ApolloClient,
   ApolloProvider,
@@ -7,8 +6,10 @@ import {
   from,
 } from '@apollo/client';
 import { onError } from '@apollo/client/link/error';
-import AddBook from './script/componenets/AddBook';
-import PopUp from './script/componenets/PopUp';
+//components
+import Header from './script/componenets/Header';
+import Main from './script/componenets/Main';
+import Footer from './script/componenets/Footer';
 
 const errorLink = onError(({ graphqlErrors, networkError }) => {
   if (graphqlErrors) {
@@ -32,13 +33,9 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <div className='App'>
-        <header className='App-header'>
-          <h1>Jamar's Book Collection</h1>
-        </header>
-        <main>
-          {/* <GetBookList /> */}
-          <AddBook />
-        </main>
+        <Header />
+        <Main />
+        <Footer />
       </div>
     </ApolloProvider>
   );

@@ -21,16 +21,19 @@ function AddBook() {
   const [currency, setCurrency] = useState('');
   const [buyPrice, setBuyPrice] = useState(0);
 
+  const [authorName, setAuthorName] = useState('');
+  const [publisherName, setPublisherName] = useState('');
   const [authors, setAuthors] = useState([]);
   const [publishers, setPublishers] = useState([]);
 
-  const [popUpFlag, setPopUpFlag] = useState(1);
+  const [popUpFlag, setPopUpFlag] = useState(0);
 
   //loading publishers
   const {
     err: errP,
     loading: loadingP,
     data: dataP,
+    refetch: refetchP,
   } = useQuery(LOAD_PUBLISHERS);
 
   useEffect(() => {
@@ -40,7 +43,7 @@ function AddBook() {
   }, [dataP]);
 
   //loading authors
-  const { err, loading, data } = useQuery(LOAD_AUTHORS);
+  const { err, loading, data, refetch } = useQuery(LOAD_AUTHORS);
 
   useEffect(() => {
     if (data) {
@@ -48,13 +51,30 @@ function AddBook() {
     }
   }, [data]);
 
+  //updating authors and publishers list after adding new ones
+  // function usePopUpRefresh() {
+  //   useEffect(() => {
+  //     if (dataP) {
+  //       setPublishers(dataP.publishers);
+  //     }
+  //   });
+  //   useEffect(() => {
+  //     if (data) {
+  //       setAuthors(data.authors);
+  //     }
+  //   });
+  // }
+
   // handle functions and validation
   const handleAuthor = e => {
     const name = e.target.value;
     authors.forEach(el => {
       if (name === el.name) {
         setAuthorId(el.id);
-      } else setAuthorId('');
+      } else {
+        setAuthorId('');
+        setAuthorName(name);
+      }
     });
     console.log(authorId);
   };
@@ -63,7 +83,10 @@ function AddBook() {
     publishers.forEach(el => {
       if (name === el.name) {
         setPublisherId(el.id);
-      } else setPublisherId('');
+      } else {
+        setPublisherId('');
+        setPublisherName(name);
+      }
     });
   };
   const handleNumberFields = e => {
@@ -119,6 +142,20 @@ function AddBook() {
       default:
         console.log('default');
     }
+  };
+  const handleReadSelect = e => {
+    const rating = document.getElementById('rating');
+    if (e.target.value !== '') {
+      setStatus(e.target.value);
+      rating.disabled = false;
+    } else rating.disabled = true;
+  };
+
+  // closing popUp
+  const popUpClose = () => {
+    refetch();
+    refetchP();
+    setPopUpFlag(0);
   };
 
   //add a new book
@@ -178,7 +215,7 @@ function AddBook() {
           pages: pages === '' ? 0 : pages,
           authorId: authorId,
           publisherId: publisherId,
-          rating: rating > 0 ? rating : 0,
+          rating: rating > 0 ? rating : -1,
           cover: cover === '' ? alert('pick a cover') : cover,
           isbn: isbn,
           firstEdition: firstEdition === '' ? 0 : firstEdition,
@@ -198,15 +235,21 @@ function AddBook() {
 
   return (
     <>
-      {popUpFlag === 1 ? <PopUp /> : null}
+      {popUpFlag === 1 ? (
+        <PopUp
+          closePopUp={popUpClose}
+          authorName={authorName}
+          publisherName={publisherName}
+        />
+      ) : null}
       <form id='form_addBook' className='form_addBook'>
         <div className='form_element'>
           <label htmlFor='title'>Title: </label>
           <input
             id='title'
+            autoComplete='off'
             type='text'
             required
-            placeholder='title'
             onChange={e => {
               setTitle(e.target.value);
             }}
@@ -216,8 +259,8 @@ function AddBook() {
           <label htmlFor='language'>Language: </label>
           <input
             id='language'
+            autoComplete='off'
             type='text'
-            placeholder='language'
             onChange={e => {
               setLanguage(e.target.value);
             }}
@@ -227,8 +270,8 @@ function AddBook() {
           <label htmlFor='genre'>Genre: </label>
           <input
             id='genre'
+            autoComplete='off'
             type='text'
-            placeholder='genre'
             onChange={e => {
               setGenre(e.target.value);
             }}
@@ -240,7 +283,7 @@ function AddBook() {
           <input
             id='pages'
             type='text'
-            placeholder='pages'
+            autoComplete='off'
             onChange={e => {
               handleNumberFields(e);
             }}
@@ -251,6 +294,7 @@ function AddBook() {
           <label htmlFor='author'>Author: </label>
           <input
             id='author'
+            autoComplete='off'
             list='authors-list'
             name='authors-list'
             onChange={e => handleAuthor(e)}
@@ -268,6 +312,7 @@ function AddBook() {
           <label htmlFor='publisher'>Publisher: </label>
           <input
             id='publisher'
+            autoComplete='off'
             list='publishers-list'
             name='publishers-list'
             onChange={e => {
@@ -282,7 +327,19 @@ function AddBook() {
             ))}
           </datalist>
         </div>
-
+        <div className='form_element'>
+          <label htmlFor='readSelect'>Read or not?</label>
+          <select
+            id='readSelect'
+            name='readSelect'
+            onChange={e => handleReadSelect(e)}
+          >
+            <option value=''>-choose-</option>
+            <option value='read'>Read</option>
+            <option value='unread'>Unread</option>
+            <option value='wanted'>Wanted</option>
+          </select>
+        </div>
         <div className='form_element'>
           <label htmlFor='rating'>Rating:</label>
           <input
@@ -291,9 +348,8 @@ function AddBook() {
             min='0'
             max='10'
             step='1'
-            onChange={e => {
-              setRating(e.target.value);
-            }}
+            disabled={true}
+            onChange={e => handleNumberFields(e)}
           />
           <p id='ratingId'>{rating}</p>
         </div>
@@ -318,7 +374,6 @@ function AddBook() {
           <input
             id='isbn'
             type='text'
-            placeholder='isbn'
             onChange={e => {
               setIsbn(e.target.value);
             }}
@@ -328,8 +383,8 @@ function AddBook() {
           <label htmlFor='firstEdition'>First edition: </label>
           <input
             id='firstEdition'
+            autoComplete='off'
             type='text'
-            placeholder='first edition'
             onChange={e => {
               handleNumberFields(e);
             }}
@@ -339,31 +394,16 @@ function AddBook() {
           <label htmlFor='myEdition'>My edition:</label>
           <input
             id='myEdition'
+            autoComplete='off'
             type='text'
-            placeholder='my edition'
             onChange={e => {
               handleNumberFields(e);
             }}
           />
         </div>
-        <div className='form_element'>
-          <label htmlFor='readSelect'>Read or not?</label>
-          <select
-            id='readSelect'
-            name='readSelect'
-            onChange={e => {
-              setStatus(e.target.value);
-            }}
-          >
-            <option value=''>-choose-</option>
-            <option value='read'>Read</option>
-            <option value='unread'>Unread</option>
-            <option value='wanted'>Wanted</option>
-          </select>
-        </div>
 
         <div className='form_element'>
-          <legend>Buy Price:</legend>
+          <legend>Currency:</legend>
           <input
             type='radio'
             name='currency'
@@ -392,10 +432,12 @@ function AddBook() {
             }}
           />
           <label htmlFor='eur'>EUR</label>
-          <br></br>
+        </div>
+        <div className='formElement'>
           <label htmlFor='value'>Price: </label>
           <input
             form='form_addBook'
+            autoComplete='off'
             type='text'
             id='value'
             onChange={e => handleNumberFields(e)}

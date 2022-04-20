@@ -1,0 +1,38 @@
+header {
+  width: 100%;
+  h1 {
+    a {
+      color: $font-color;
+      text-decoration: none;
+    }
+    padding-top: 10px;
+    padding-bottom: 10px;
+
+    width: 100%;
+
+    text-align: center;
+    line-height: $font-size-medium;
+    font-size: $font-size-medium;
+    text-transform: uppercase;
+  }
+  nav {
+    width: 100%;
+    ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+
+      li {
+        flex-basis: 45%;
+        padding-bottom: 7px;
+
+        text-align: center;
+        a {
+          cursor: default;
+          color: $font-color;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+}

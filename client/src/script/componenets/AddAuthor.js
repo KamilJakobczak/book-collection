@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { ADD_AUTHOR } from '../GraphQL/Mutations';
 import { LOAD_AUTHORS } from '../GraphQL/Queries';
 
-function AddAuthor() {
-  const [name, setName] = useState('');
+function AddAuthor(props) {
+  const [name, setName] = useState(props.authorName);
   const [nationality, setNationality] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [authors, setAuthors] = useState('');

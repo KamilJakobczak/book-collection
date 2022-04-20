@@ -9,11 +9,12 @@ export const ADD_BOOK = gql`
     $authorId: ID!
     $publisherId: ID!
     $rating: Int!
-    $ebook: String!
+    $cover: String!
     $isbn: String!
     $firstEdition: Int!
     $myEdition: Int!
-    $cover: String!
+    $status: String!
+    $currency: String!
     $buyPrice: Int!
   ) {
     addBook(
@@ -24,11 +25,12 @@ export const ADD_BOOK = gql`
       authorId: $authorId
       publisherId: $publisherId
       rating: $rating
-      ebook: $ebook
+      cover: $cover
       isbn: $isbn
       firstEdition: $firstEdition
       myEdition: $myEdition
-      cover: $cover
+      status: $status
+      currency: $currency
       buyPrice: $buyPrice
     ) {
       title

@@ -1,0 +1,17 @@
+.addAuthor {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  .form_element {
+    margin-top: 5px;
+    flex-basis: 90%;
+    display: flex;
+    justify-content: space-between;
+  }
+  button {
+    font-size: $font-size-normal;
+    margin-top: 10px;
+    flex-basis: 80%;
+  }
+}

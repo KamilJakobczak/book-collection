@@ -1,0 +1,19 @@
+.form_addBook {
+  // font-size: $font-size-normal;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+
+  .form_element {
+    flex-basis: 90%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 3px;
+    button {
+      font-size: $font-size-normal;
+      flex-basis: 100%;
+      justify-self: stretch;
+    }
+  }
+}

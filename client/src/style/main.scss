@@ -1,5 +1,13 @@
 @import 'reset';
 @import 'variables';
-@import 'base';
 
+@import 'base';
+@import 'header';
+@import 'footer';
+@import 'render';
 @import 'popup';
+
+@import 'collection';
+@import 'addbook';
+@import 'addauthor';
+@import 'addpublisher';

@@ -1,0 +1,20 @@
+.collection {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  .singleBookTile {
+    flex-basis: 75%;
+    margin-bottom: 5px;
+    border: solid 1.5px $font-color-secondary;
+    padding: 7px;
+
+    a {
+      line-height: $font-size-medium;
+      text-decoration: none;
+      font-size: $font-size-normal;
+      color: $font-color-secondary;
+      text-align: center;
+    }
+  }
+}

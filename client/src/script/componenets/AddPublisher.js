@@ -3,8 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { LOAD_PUBLISHERS } from '../GraphQL/Queries';
 import { ADD_PUBLISHER } from '../GraphQL/Mutations';
 
-function AddPublisher() {
-  const [name, setName] = useState('');
+function AddPublisher(props) {
+  const [name, setName] = useState(props.publisherName);
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [website, setWebsite] = useState('');

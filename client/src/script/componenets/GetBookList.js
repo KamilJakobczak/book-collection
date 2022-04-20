@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-
+import { Link } from 'react-router-dom';
+import Book from './Book';
 import { LOAD_BOOKS } from '../GraphQL/Queries';
 
 function GetBookList() {
@@ -12,19 +13,21 @@ function GetBookList() {
       setBooks(data.books);
     }
   }, [data]);
+  console.log(books);
   // console.log(books);
   // books.sort(function (a, b) {
   //   if (a.title.toLowerCase() < b.title.toLowerCase()) return -1;
   //   if (a.title.toLowerCase() > b.title.toLowerCase()) return 1;
   //   return 0;
   // });
+
   return (
-    <div className='bookList'>
+    <div className='collection'>
       {books.map((book, id) => (
-        <div key={id}>
-          <p>
-            {book.title}-{book.author.name}-{book.publisher.name}
-          </p>
+        <div className='singleBookTile' key={id}>
+          <Link to={'/' + book.id} element={<Book bookId={book.id} />}>
+            {book.title}
+          </Link>
         </div>
       ))}
     </div>
