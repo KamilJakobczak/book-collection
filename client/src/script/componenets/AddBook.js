@@ -18,7 +18,7 @@ function AddBook() {
   const [firstEdition, setFirstEdition] = useState('');
   const [myEdition, setMyEdition] = useState('');
   const [status, setStatus] = useState('');
-  const [currency, setCurrency] = useState('');
+  const [currency, setCurrency] = useState('pln');
   const [buyPrice, setBuyPrice] = useState(0);
 
   const [authorName, setAuthorName] = useState('');
@@ -44,7 +44,6 @@ function AddBook() {
 
   //loading authors
   const { err, loading, data, refetch } = useQuery(LOAD_AUTHORS);
-
   useEffect(() => {
     if (data) {
       setAuthors(data.authors);
@@ -233,6 +232,9 @@ function AddBook() {
     if (error) console.log(error);
   };
 
+  if (loading || loadingP) return 'Loading authors...';
+  if (err) return err;
+  if (errP) return errP;
   return (
     <>
       {popUpFlag === 1 ? (
@@ -409,7 +411,7 @@ function AddBook() {
             name='currency'
             id='usd'
             onClick={e => {
-              setCurrency(e.target.value);
+              setCurrency(e.target.id);
             }}
           />
           <label htmlFor='usd'>USD</label>
@@ -418,7 +420,7 @@ function AddBook() {
             name='currency'
             id='pln'
             onClick={e => {
-              setCurrency(e.target.value);
+              setCurrency(e.target.id);
             }}
           />
           <label htmlFor='pln'>PLN</label>
@@ -428,7 +430,7 @@ function AddBook() {
             name='currency'
             id='eur'
             onClick={e => {
-              setCurrency(e.target.value);
+              setCurrency(e.target.id);
             }}
           />
           <label htmlFor='eur'>EUR</label>

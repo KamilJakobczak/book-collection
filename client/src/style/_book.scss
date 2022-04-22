@@ -1,0 +1,26 @@
+div.singleBookPage {
+  margin-top: 10px;
+  display: flex;
+  div.cover {
+  }
+  div.bookData {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    div.bookData_element {
+      margin: top 5px;
+      flex-basis: 90%;
+      display: flex;
+      justify-content: space-between;
+      p {
+        font-size: $font-size-normal;
+        &.key {
+        }
+        &.value {
+        }
+      }
+    }
+  }
+  div.bookQutoes {
+  }
+}

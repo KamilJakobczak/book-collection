@@ -1,5 +1,14 @@
 import React from 'react';
+import BookData from './BookData';
 
-export default function Book() {
-  return <div>Book</div>;
+function Book(props) {
+  return (
+    <div className='singleBookPage'>
+      <div className='cover'></div>
+      <BookData bookId={props.bookId} />
+      <div className='bookQuotes'></div>
+    </div>
+  );
 }
+
+export default Book;
