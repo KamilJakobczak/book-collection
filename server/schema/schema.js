@@ -119,6 +119,7 @@ const Mutation = new GraphQLObjectType({
         return book.save();
       },
     },
+    // updateBook: {},
     addPublisher: {
       type: PublisherType,
       args: {

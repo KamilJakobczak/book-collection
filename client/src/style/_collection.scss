@@ -2,19 +2,40 @@
   margin-top: 10px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  .singleBookTile {
-    flex-basis: 75%;
-    margin-bottom: 5px;
-    border: solid 1.5px $font-color-secondary;
-    padding: 7px;
+  justify-content: center;
 
-    a {
-      line-height: $font-size-medium;
-      text-decoration: none;
+  .searchEngine {
+    flex-basis: 90%;
+
+    padding: 7px;
+    margin-bottom: 15px;
+
+    .searchEngine_input {
+      display: block;
+      width: 90%;
+      margin: 0 auto;
       font-size: $font-size-normal;
-      color: $font-color-secondary;
       text-align: center;
+    }
+  }
+  .bookTiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    .singleBookTile {
+      flex-basis: 75%;
+      margin-bottom: 5px;
+      border: solid 1.5px $font-color-secondary;
+      padding: 7px;
+
+      a {
+        display: block;
+        width: 100%;
+        line-height: $font-size-medium;
+        text-decoration: none;
+        font-size: $font-size-normal;
+        color: $font-color-secondary;
+      }
     }
   }
 }

@@ -11,7 +11,12 @@ function Collection() {
   //   if (a.title.toLowerCase() > b.title.toLowerCase()) return 1;
   //   return 0;
   // });
+  // const promise = new Promise(function (resolve, reject) {
+  //   resolve();
+  // });
+  const [search, setSearch] = useState('');
   const { error, loading, data, refetch } = useQuery(LOAD_BOOKS);
+
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -19,6 +24,18 @@ function Collection() {
       setBooks(data.books);
     }
   }, [data]);
+  if (loading) return <p>loading</p>;
+  // useEffect(() => {
+  //   (async () => {
+  //     setBooks(data);
+  //     console.log(books);
+  //   })();
+
+  //   return () => {
+  //     console.log('componenet unmounted');
+  //   };
+  // });
+
   // const handleBookClick = ids => console.log(ids);
   // const {
   //   err: errorB,
@@ -34,21 +51,53 @@ function Collection() {
   //   }
   // });
   // console.log(dataB);
-  return (
-    <div className='collection'>
-      {books.map((book, id) => (
-        <div className='singleBookTile' key={id}>
-          <Link
-            to={'/collection/' + book.id}
-            element={<Book bookId={book.id} />}
-            // onClick={handleBookClick(book.id)}
-          >
-            {book.title} - {book.author.name}
-          </Link>
+  // const booksAToZ = books;
+  // console.log(booksAToZ);
+  // const booksAToZ = books.sort();
+  if (books.length !== 0) {
+    let booksSort = [...books];
+
+    if (search !== '') {
+      let bookSearch = [];
+      booksSort.forEach(book => {
+        if (book.title.toLowerCase().includes(search)) {
+          bookSearch.push(book);
+        }
+      });
+      booksSort = bookSearch;
+    } else {
+      booksSort.sort((a, b) => {
+        return a.title > b.title ? 1 : -1;
+      });
+    }
+
+    return (
+      <div className='collection'>
+        <div className='searchEngine'>
+          <input
+            className='searchEngine_input'
+            type='text'
+            placeholder='Looking for a specific book?'
+            onChange={e => setSearch(e.target.value)}
+          />
         </div>
-      ))}
-    </div>
-  );
+        <div className='bookTiles'>
+          {booksSort.map((book, id) => (
+            <div className='singleBookTile' key={id}>
+              <Link
+                to={'/collection/' + book.id}
+                element={<Book bookId={book.id} />}
+                // onClick={handleBookClick(book.id)}
+              >
+                {book.title} -{' '}
+                {book.author.name === undefined ? null : book.author.name}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Collection;
