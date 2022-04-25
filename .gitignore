@@ -25,3 +25,4 @@ yarn-error.log*
 
 # epub parser
 epub_parser
+server/uploadedBooks

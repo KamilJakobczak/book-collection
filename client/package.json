@@ -39,6 +39,7 @@
   },
   "devDependencies": {
     "@apollo/client": "^3.5.10",
+    "axios": "^0.26.1",
     "sass": "^1.49.11"
   }
 }
