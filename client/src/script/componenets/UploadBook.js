@@ -5,7 +5,7 @@ export default function UploadBook() {
   const [selectedFile, setSelectedFile] = useState();
 
   const onFileChange = e => {
-    setSelectedFile(e.target.files[0]);
+    setSelectedFile(e.target.files);
   };
 
   // axios({
@@ -14,21 +14,40 @@ export default function UploadBook() {
   // }).then(response => {
   //   console.log(response);
   // console.log(selectedFile);
-
   const handleFileUpload = e => {
     e.preventDefault();
     try {
-      const data = new FormData();
-      data.append('myFile', selectedFile, selectedFile.name);
+      if (selectedFile.length === 1) {
+        console.log('wysyłam 1');
+        const data = new FormData();
 
-      Axios.post('http://localhost:4000/uploads', data).then(
-        (request, result) => {
-          console.log(request);
-          console.log(result);
+        data.append('myFile', selectedFile, selectedFile.name);
+
+        Axios.post('http://localhost:4000/uploads', data).then(
+          (request, result) => {
+            console.log(request);
+            // console.log(result);
+          }
+        );
+      } else {
+        console.log(`wysyłam ${selectedFile.length} pliki`);
+        const data = new FormData();
+
+        for (let i = 0; i < selectedFile.length; i++) {
+          data.append('files', selectedFile[i], selectedFile[i].name);
         }
-      );
+        // for (let value of data.values()) {
+        //   console.log(value);
+        // }
+        Axios.post('http://localhost:4000/uploads', data).then(
+          (request, result) => {
+            console.log(result);
+            // console.log(result);
+          }
+        );
+      }
     } catch (error) {
-      console.error('Error while uploading');
+      console.error('Error while uploading', error);
     }
   };
 
@@ -56,7 +75,7 @@ export default function UploadBook() {
     <div>
       <div>
         <form action='/uploads' encType='multipart/form-data' method='POST'>
-          <input type='file' onChange={onFileChange} />
+          <input type='file' multiple onChange={onFileChange} />
           <button onClick={handleFileUpload}>Upload!</button>
         </form>
       </div>

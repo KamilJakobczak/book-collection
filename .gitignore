@@ -1,4 +1,5 @@
 # dependencies
+
 server/node_modules
 /.pnp
 .pnp.js
@@ -26,3 +27,4 @@ yarn-error.log*
 # epub parser
 epub_parser
 server/uploadedBooks
+templates

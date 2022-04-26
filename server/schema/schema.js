@@ -14,7 +14,7 @@ const {
   GraphQLInt,
   GraphQLList,
   GraphQLNonNull,
-} = graphql;
+} = require('graphql');
 
 const RootQuery = new GraphQLObjectType({
   name: 'RootQueryType',
