@@ -6,7 +6,6 @@ export default function UploadBook() {
 
   const onFileChange = e => {
     setSelectedFile(e.target.files);
-    console.log(e.target.files);
   };
 
   // axios({
@@ -26,7 +25,6 @@ export default function UploadBook() {
 
         Axios.post('http://localhost:4000/uploads', data).then(data => {
           console.log(data);
-          // console.log(result);
         });
       } else {
         console.log(`wysyłam ${selectedFile.length} pliki`);
@@ -39,8 +37,7 @@ export default function UploadBook() {
         //   console.log(value);
         // }
         Axios.post('http://localhost:4000/uploads', data).then(data => {
-          console.log(data.data.files);
-          // console.log(result);
+          console.log(data.data.parsedData);
         });
       }
     } catch (error) {

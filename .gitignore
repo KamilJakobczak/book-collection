@@ -28,6 +28,6 @@ yarn-error.log*
 
 # epub parser
 epub_parser
-server/uploadedBooks
+server/uploaded_books
 templates
 data

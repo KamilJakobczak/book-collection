@@ -1,27 +1,25 @@
+//server
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const { graphqlHTTP } = require('express-graphql');
-// const axios = require('axios');
 
+//file system
+const path = require('path');
 const { IncomingForm } = require('formidable');
 const bluebird = require('bluebird');
 const fs = bluebird.promisifyAll(require('fs-extra'));
 
-// const util = require('util');
-const path = require('path');
-// const epubParser = require('./epub_parser/epub_parser');
+//additional libraries
+const { nanoid } = require('nanoid');
 
+//modules
 const schema = require('./schema/schema');
 const epubParser = require('./EpubParser');
-// const { concat } = require('lodash');
+
+//server configuration
 const port = 4000;
-
 const app = express();
-
-// const v1 = express.Router();
-// app.use('/api/v1', v1);
-
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,6 +27,9 @@ app.listen(port, () => {
   console.log('now listening for requests on port 4000');
 });
 
+//additional configuration
+
+let ids = [];
 //returns true or false:
 async function checkUploadFolder(uploadFolder) {
   try {
@@ -62,7 +63,7 @@ const isFileValid = file => {
 app.post('/uploads', async (req, res) => {
   console.log('dotarło');
 
-  const uploadFolder = path.join(__dirname, 'uploadedBooks');
+  const uploadFolder = path.join(__dirname, 'uploaded_books');
   // new formidable instance to process incoming files:
   const form = new IncomingForm({
     multiples: true,
@@ -87,7 +88,6 @@ app.post('/uploads', async (req, res) => {
         message: 'There was an error parsing the files',
       });
     }
-    // res.writeHead(200, { 'Content-Type': 'application/json' });
 
     if (!files.files.length) {
       //single file
@@ -122,6 +122,8 @@ app.post('/uploads', async (req, res) => {
       // CODE FOR MULTIPLE FILES
 
       for (let i = 0; i < files.files.length; i++) {
+        const id = nanoid(10);
+
         const file = files.files[i];
 
         const isValid = isFileValid(file);
@@ -138,30 +140,23 @@ app.post('/uploads', async (req, res) => {
         }
         try {
           fs.renameAsync(file.filepath, `${uploadFolder}//${fileName}`);
-          // const newFile = await File.create({
-          //   name: `uploadedBooks/${fileName}`,
-          // });
         } catch (error) {
           console.log(error);
         }
+
         myUploadedFiles.push(fileName);
+        ids.push(id);
       }
-      // try {
-      //   return res.status(200).json({
-      //     status: 'success',
-      //     message: 'File created successfully!!',
-      //   });
-      // } catch (error) {
-      //   res.json({
-      //     error,
-      //   });
-      // }
     }
-    epubParser(myUploadedFiles);
+    console.log(ids);
+    const parsedData = await epubParser(myUploadedFiles, ids);
+    console.log(parsedData);
+
     return res.status(200).json({
       status: 'success',
       message: 'The files have been uploaded successfully',
       files: myUploadedFiles,
+      parsedData: parsedData,
     });
   });
 });
