@@ -13,7 +13,7 @@ const path = require('path');
 // const epubParser = require('./epub_parser/epub_parser');
 
 const schema = require('./schema/schema');
-
+const epubParser = require('./EpubParser');
 // const { concat } = require('lodash');
 const port = 4000;
 
@@ -79,6 +79,7 @@ app.post('/uploads', async (req, res) => {
 
   form.parse(req, async (err, fields, files) => {
     let myUploadedFiles = [];
+
     if (err) {
       console.log('Error parsing the files');
       return res.status(400).json({
@@ -156,13 +157,12 @@ app.post('/uploads', async (req, res) => {
       //   });
       // }
     }
-    console.log(myUploadedFiles);
+    epubParser(myUploadedFiles);
     return res.status(200).json({
       status: 'success',
       message: 'The files have been uploaded successfully',
       files: myUploadedFiles,
     });
-    // }
   });
 });
 

@@ -6,6 +6,8 @@ server/node_modules
 
 # images
 /public/images
+images
+
 
 # testing
 /coverage
@@ -28,3 +30,4 @@ yarn-error.log*
 epub_parser
 server/uploadedBooks
 templates
+data

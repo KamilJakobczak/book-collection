@@ -6,6 +6,7 @@ export default function UploadBook() {
 
   const onFileChange = e => {
     setSelectedFile(e.target.files);
+    console.log(e.target.files);
   };
 
   // axios({
@@ -21,14 +22,12 @@ export default function UploadBook() {
         console.log('wysyłam 1');
         const data = new FormData();
 
-        data.append('myFile', selectedFile, selectedFile.name);
+        data.append('files', selectedFile[0], selectedFile[0].name);
 
-        Axios.post('http://localhost:4000/uploads', data).then(
-          (request, result) => {
-            console.log(request);
-            // console.log(result);
-          }
-        );
+        Axios.post('http://localhost:4000/uploads', data).then(data => {
+          console.log(data);
+          // console.log(result);
+        });
       } else {
         console.log(`wysyłam ${selectedFile.length} pliki`);
         const data = new FormData();
@@ -39,12 +38,10 @@ export default function UploadBook() {
         // for (let value of data.values()) {
         //   console.log(value);
         // }
-        Axios.post('http://localhost:4000/uploads', data).then(
-          (request, result) => {
-            console.log(result);
-            // console.log(result);
-          }
-        );
+        Axios.post('http://localhost:4000/uploads', data).then(data => {
+          console.log(data.data.files);
+          // console.log(result);
+        });
       }
     } catch (error) {
       console.error('Error while uploading', error);
