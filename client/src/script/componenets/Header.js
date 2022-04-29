@@ -21,9 +21,6 @@ function Header() {
           <li>
             <Link to='/newpublisher'>New publisher</Link>
           </li>
-          <li>
-            <Link to='/uploadbook'>Upload</Link>
-          </li>
         </ul>
       </nav>
     </header>

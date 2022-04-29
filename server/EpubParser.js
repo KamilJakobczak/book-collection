@@ -1,18 +1,18 @@
 const EPub = require('epub');
-// const bookFolder = './uploadedBooks';
 const bluebird = require('bluebird');
 const fs = bluebird.promisifyAll(require('fs-extra'));
-// const fs = require('fs'),
+
 //   bookList = [...fs.readdirSync(bookFolder)];
-const dataFile = fs.readFileSync('./uploaded_books/data/data.json');
+// const dataFile = fs.readFileSync('./uploaded_books/data/data.json');
 const path = require('path');
-let dataRead = JSON.parse(dataFile);
-const parsed_data = fs.readFileSync('./uploaded_books/data/parsed_data.json');
-let returnFile = JSON.parse(parsed_data);
+const { nanoid } = require('nanoid');
+const { Promise, resolve, reject } = require('bluebird');
+const { first } = require('lodash');
 
 //Legend:
 //epub.metadata.cover - cover image attribute to use in getImage
 //epub.metadata.creator - author
+
 async function checkFolders(folder, name) {
   try {
     fs.statAsync(folder);
@@ -31,8 +31,25 @@ async function checkFolders(folder, name) {
   }
   return true;
 }
+async function languageCheck(lang) {
+  switch (lang) {
+    case 'pl-pl':
+      return 'Polish';
+    case 'pl':
+      return 'Polish';
+    case 'en-gb':
+      return 'English';
+    case 'en':
+      return 'English';
+    case 'en-us':
+      return 'English';
 
-module.exports = async function (uploadedFiles, ids) {
+    default:
+      return '';
+  }
+}
+
+module.exports = async function parsingLogic(uploadedFiles, ids) {
   const imagesFolder = path.join(__dirname, 'uploaded_books', 'images');
   const dataFolder = path.join(__dirname, 'uploaded_books', 'data');
   const imagesFolderExists = await checkFolders(imagesFolder, 'images');
@@ -43,7 +60,6 @@ module.exports = async function (uploadedFiles, ids) {
       "Can't process the files because one of important folders doesn't exist"
     );
   }
-
   if (uploadedFiles.length === 1) {
     const epub = new EPub(
       `./uploaded_books/${uploadedFiles[0]}`,
@@ -53,42 +69,29 @@ module.exports = async function (uploadedFiles, ids) {
 
     epub.on('end', async function () {
       // console.log(epub.metadata);
-
       const data = epub.metadata;
 
-      const localId = ids[0];
-      const title = data.title;
       const author = data.creator;
-      const publisher = data.publisher;
-      const language = data.language;
+      const description = data.description;
+      const distributor = data.distributor;
       const genre = data.subject;
       const ISBN = data.ISBN;
-      const distributor = data.distributor;
+      const language = await languageCheck(data.language);
+      const localId = ids[0];
+      const publisher = data.publisher;
+      const title = data.title;
 
       const bookData = {
-        localId: localId,
-        title: title,
         author: author,
-        publisher: publisher,
-        language: language,
+        description: description,
+        distributor: distributor !== undefined ? distributor : null,
         genre: genre,
         ISBN: ISBN !== undefined ? ISBN : null,
-        distributor: distributor !== undefined ? distributor : null,
+        language: language,
+        localId: localId,
+        publisher: publisher,
+        title: title,
       };
-      // console.log(bookData);
-      dataRead.push(bookData);
-
-      const newData = JSON.stringify(dataRead);
-
-      try {
-        fs.writeFile('./uploaded_books/data/parsed_data.json', newData, err => {
-          if (err) throw err;
-
-          console.log('new data added');
-        });
-      } catch (err) {
-        console.error('Error writing epub metadata to file', err);
-      }
 
       if (epub.metadata.cover === undefined)
         console.log(`${epub.metadata.title} has no cover`);
@@ -96,7 +99,7 @@ module.exports = async function (uploadedFiles, ids) {
         epub.getImage(
           `${epub.metadata.cover}`,
           function (error, img, mimeType) {
-            fs.writeFile(
+            fs.writeFileAsync(
               `${imagesFolder}/${localId}.jpg`,
               img,
               function (err, written) {
@@ -110,49 +113,36 @@ module.exports = async function (uploadedFiles, ids) {
     });
     epub.parse();
   } else {
-    let i = 0;
-    uploadedFiles.forEach(book => {
+    for (let i = 0; i < uploadedFiles.length; i++) {
+      const book = uploadedFiles[i];
       const id = ids[i];
       const epub = new EPub(
         `./uploaded_books/${book}`,
         `${imagesFolder}`,
         './uploaded_books/articles/'
       );
-
       epub.on('end', async function () {
         const data = epub.metadata;
-
-        const title = data.title;
         const author = data.creator;
-        const publisher = data.publisher;
-        const language = data.language;
+        const description = data.description;
+        const distributor = data.distributor;
         const genre = data.subject;
         const ISBN = data.ISBN;
-        const distributor = data.distributor;
-
+        const language = await languageCheck(data.language);
+        const localId = id;
+        const publisher = data.publisher;
+        const title = data.title;
         const bookData = {
-          localId: id,
-          title: title,
           author: author,
-          publisher: publisher,
-          language: language,
+          description: description,
+          distributor: distributor !== undefined ? distributor : null,
           genre: genre,
           ISBN: ISBN !== undefined ? ISBN : null,
-          distributor: distributor !== undefined ? distributor : null,
+          language: language,
+          localId: localId,
+          publisher: publisher,
+          title: title,
         };
-
-        dataRead.push(bookData);
-
-        const newData = JSON.stringify(dataRead);
-
-        try {
-          fs.writeFile(`${dataFolder}/parsed_data.json`, newData, err => {
-            if (err) throw err;
-            console.log('new data added');
-          });
-        } catch (err) {
-          console.error('Error writing epub metadata to file', err);
-        }
 
         if (epub.metadata.cover === undefined)
           console.log(`${epub.metadata.title} has no cover`);
@@ -160,7 +150,7 @@ module.exports = async function (uploadedFiles, ids) {
           epub.getImage(
             `${epub.metadata.cover}`,
             function (error, img, mimeType) {
-              fs.writeFile(
+              fs.writeFileAsync(
                 `${imagesFolder}/${id}.jpg`,
                 img,
                 function (err, written) {
@@ -172,10 +162,7 @@ module.exports = async function (uploadedFiles, ids) {
           );
         }
       });
-      i++;
       epub.parse();
-    });
+    }
   }
-
-  return returnFile;
 };

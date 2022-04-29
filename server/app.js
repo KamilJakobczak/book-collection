@@ -91,6 +91,8 @@ app.post('/uploads', async (req, res) => {
 
     if (!files.files.length) {
       //single file
+      const id = nanoid(10);
+      ids.push(id);
       const file = files.files;
 
       const isValid = isFileValid(file);
@@ -148,9 +150,11 @@ app.post('/uploads', async (req, res) => {
         ids.push(id);
       }
     }
-    console.log(ids);
     const parsedData = await epubParser(myUploadedFiles, ids);
-    console.log(parsedData);
+
+    // .then(data => (asdf = data))
+    // .catch(err => console.error(err));
+    // console.log(parsedData);
 
     return res.status(200).json({
       status: 'success',

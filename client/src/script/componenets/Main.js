@@ -8,6 +8,7 @@ import Book from './Book';
 import AddBook from './AddBook';
 import AddAuthor from './AddAuthor';
 import AddPublisher from './AddPublisher';
+import NewBook from './NewBook';
 import UploadBook from './UploadBook';
 
 function Main() {
@@ -33,10 +34,13 @@ function Main() {
           }
         />
         <Route path='/collection' element={<Collection />} />
-        <Route path='/newbook' element={<AddBook />} />
+        <Route path='/newbook' element={<NewBook />} />
+        <Route path='/newbook/manual' element={<AddBook />} />
+        <Route path='/newbook/upload' element={<UploadBook />} />
+
         <Route path='/newauthor' element={<AddAuthor />} />
         <Route path='/newpublisher' element={<AddPublisher />} />
-        <Route path='/uploadbook' element={<UploadBook />} />
+
         {books.map((book, id) => (
           <Route
             key={id}
