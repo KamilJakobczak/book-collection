@@ -152,10 +152,6 @@ app.post('/uploads', async (req, res) => {
     }
     const parsedData = await epubParser(myUploadedFiles, ids);
 
-    // .then(data => (asdf = data))
-    // .catch(err => console.error(err));
-    // console.log(parsedData);
-
     return res.status(200).json({
       status: 'success',
       message: 'The files have been uploaded successfully',
