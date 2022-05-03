@@ -16,6 +16,7 @@ const { nanoid } = require('nanoid');
 //modules
 const schema = require('./schema/schema');
 const epubParser = require('./EpubParser');
+const logger = require('./global_variables');
 
 //server configuration
 const port = 4000;
@@ -28,6 +29,7 @@ app.listen(port, () => {
 });
 
 //additional configuration
+imagesFolder = path.join(__dirname, 'uploaded_books', 'images');
 
 let ids = [];
 //returns true or false:
@@ -59,6 +61,11 @@ const isFileValid = file => {
   }
   return true;
 };
+async function getFileMeta(id) {
+  const data = fs.readFileSync(`./uploaded_books/data/${id}.json`);
+  const dataParsed = JSON.parse(data);
+  return dataParsed;
+}
 
 app.post('/uploads', async (req, res) => {
   console.log('dotarło');
@@ -151,18 +158,43 @@ app.post('/uploads', async (req, res) => {
       }
     }
     const parsedData = await epubParser(myUploadedFiles, ids);
-
-    return res.status(200).json({
-      status: 'success',
-      message: 'The files have been uploaded successfully',
-      files: myUploadedFiles,
-      parsedData: parsedData,
-    });
+    if (parsedData) {
+      res.status(200).json({
+        status: 'success',
+        message: 'The files have been uploaded successfully',
+        files: myUploadedFiles,
+        parsedData: parsedData,
+      });
+    }
   });
 });
 
+// app.get('/uploads/meta', async (req, res) => {
+//   const id = req.query.getData;
+//   const returnData = await getFileMeta(id);
+//   res.status(200).json({
+//     status: 'success',
+//     data: returnData,
+//   });
+// });
+
+app.get('/get/image/:id', async (req, res) => {
+  // const image = fs.readFileSync(`${imagesFolder}/${req.query.imageId}.jpg`);
+  // const buffer = image.toString('base64');
+  const name = req.params.id;
+  const filepath = path.join(imagesFolder, name);
+  // console.log(req);
+  res.sendFile(filepath);
+  // res.status(200).json(req.body);
+  // res.status(200).json({
+  //   msg: 'success',
+  //   filepath,
+  // });
+  // return;
+});
+
 mongoose.connect(
-  'mongodb+srv://admin:JxVmS7mp0k2orcePvwbZ@cluster0.qwqgz.mongodb.net/Cluster0?retryWrites=true&w=majority'
+  `mongodb+srv://admin:${mongoPassword}@cluster0.qwqgz.mongodb.net/Cluster0?retryWrites=true&w=majority`
 );
 
 mongoose.connection.once('open', () => {

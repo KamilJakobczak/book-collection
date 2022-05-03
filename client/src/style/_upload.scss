@@ -13,4 +13,15 @@ div.upload {
       }
     }
   }
+  .parsedBook {
+    &__image {
+      width: 100%;
+      img {
+        display: block;
+        margin: 10px auto;
+        width: 70%;
+        height: auto;
+      }
+    }
+  }
 }

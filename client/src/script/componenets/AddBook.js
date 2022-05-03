@@ -4,25 +4,29 @@ import { LOAD_AUTHORS, LOAD_PUBLISHERS } from '../GraphQL/Queries';
 import { useQuery, useMutation } from '@apollo/client';
 import PopUp from './PopUp';
 
-function AddBook() {
+function AddBook(props) {
+  const pendingBook = props.pendingBookData;
+
+  const clearBook = props.clearBook;
+  const bookId = props.bookId;
   // variables
-  const [title, setTitle] = useState('');
-  const [language, setLanguage] = useState('');
+  const [title, setTitle] = useState(pendingBook.title);
+  const [language, setLanguage] = useState(pendingBook.language);
   const [genre, setGenre] = useState('');
   const [pages, setPages] = useState('');
   const [authorId, setAuthorId] = useState('');
   const [publisherId, setPublisherId] = useState('');
   const [rating, setRating] = useState('');
-  const [cover, setCover] = useState('');
-  const [isbn, setIsbn] = useState('');
+  const [cover, setCover] = useState(props.ebook === true ? 'eBook' : '');
+  const [isbn, setIsbn] = useState(pendingBook.ISBN ? pendingBook.ISBN : '');
   const [firstEdition, setFirstEdition] = useState('');
   const [myEdition, setMyEdition] = useState('');
   const [status, setStatus] = useState('');
   const [currency, setCurrency] = useState('pln');
   const [buyPrice, setBuyPrice] = useState(0);
 
-  const [authorName, setAuthorName] = useState('');
-  const [publisherName, setPublisherName] = useState('');
+  const [authorName, setAuthorName] = useState(pendingBook.author);
+  const [publisherName, setPublisherName] = useState(pendingBook.publisher);
   const [authors, setAuthors] = useState([]);
   const [publishers, setPublishers] = useState([]);
 
@@ -50,20 +54,6 @@ function AddBook() {
     }
   }, [data]);
 
-  //updating authors and publishers list after adding new ones
-  // function usePopUpRefresh() {
-  //   useEffect(() => {
-  //     if (dataP) {
-  //       setPublishers(dataP.publishers);
-  //     }
-  //   });
-  //   useEffect(() => {
-  //     if (data) {
-  //       setAuthors(data.authors);
-  //     }
-  //   });
-  // }
-
   // handle functions and validation
   const handleAuthor = e => {
     const name = e.target.value;
@@ -87,6 +77,7 @@ function AddBook() {
         setPublisherName(name);
       }
     });
+    console.log(publisherId);
   };
   const handleNumberFields = e => {
     const value = e.target.value;
@@ -182,7 +173,7 @@ function AddBook() {
 
     const numberValues = [
       { name: 'pages', value: pages },
-      { name: 'rating', value: rating },
+      // { name: 'rating', value: rating },
       { name: 'First edition', value: firstEdition },
       { name: 'Your edition', value: myEdition },
       { name: 'Buy price', value: buyPrice },
@@ -205,6 +196,7 @@ function AddBook() {
       );
       return;
     }
+    // console.log(authorId, publisherId);
     if (authorId !== '' && publisherId !== '') {
       addBook({
         variables: {
@@ -224,6 +216,7 @@ function AddBook() {
           buyPrice: buyPrice,
         },
       });
+      props.clearBook(bookId);
     } else {
       document.body.classList.add('blur');
       setPopUpFlag(1);
@@ -235,6 +228,7 @@ function AddBook() {
   if (loading || loadingP) return 'Loading authors...';
   if (err) return err;
   if (errP) return errP;
+  // console.log(authors);
   return (
     <>
       {popUpFlag === 1 ? (
@@ -242,6 +236,8 @@ function AddBook() {
           closePopUp={popUpClose}
           authorName={authorName}
           publisherName={publisherName}
+          refetchAuthors={refetch}
+          refetchPublishers={refetchP}
         />
       ) : null}
       <form id='form_addBook' className='form_addBook'>
@@ -251,6 +247,7 @@ function AddBook() {
             id='title'
             autoComplete='off'
             type='text'
+            value={title}
             required
             onChange={e => {
               setTitle(e.target.value);
@@ -263,6 +260,7 @@ function AddBook() {
             id='language'
             autoComplete='off'
             type='text'
+            value={language}
             onChange={e => {
               setLanguage(e.target.value);
             }}
@@ -297,6 +295,7 @@ function AddBook() {
           <input
             id='author'
             autoComplete='off'
+            value={authorName}
             list='authors-list'
             name='authors-list'
             onChange={e => handleAuthor(e)}
@@ -315,6 +314,7 @@ function AddBook() {
           <input
             id='publisher'
             autoComplete='off'
+            value={publisherName}
             list='publishers-list'
             name='publishers-list'
             onChange={e => {
@@ -361,6 +361,7 @@ function AddBook() {
           <select
             id='cover'
             name='cover'
+            value={cover}
             onChange={e => {
               setCover(e.target.value);
             }}
@@ -376,6 +377,7 @@ function AddBook() {
           <input
             id='isbn'
             type='text'
+            value={isbn}
             onChange={e => {
               setIsbn(e.target.value);
             }}

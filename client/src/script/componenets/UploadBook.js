@@ -5,14 +5,15 @@ import AddBook from './AddBook';
 export default function UploadBook() {
   const [selectedFile, setSelectedFile] = useState();
   const [parsedBooks, setParsedBooks] = useState();
-  let responseData = [];
 
   const onFileChange = e => {
     setSelectedFile(e.target.files);
   };
-
-  function getMetaFile(id) {}
-
+  const clearBook = id => {
+    const tempArr = [...parsedBooks];
+    tempArr.splice(id, 1);
+    setParsedBooks(tempArr);
+  };
   const handleFileUpload = e => {
     e.preventDefault();
     try {
@@ -33,7 +34,22 @@ export default function UploadBook() {
           data.append('files', selectedFile[i], selectedFile[i].name);
         }
         Axios.post('http://localhost:4000/uploads', data)
-          .then(response => console.log(response.data))
+          .then(response => {
+            console.log(response.data);
+            setParsedBooks(response.data.parsedData);
+
+            // setTimeout(() => {
+            //   const config = {
+            //     method: 'get',
+            //     url: 'http://localhost:4000/uploads/meta',
+            //     params: { getData: response.data.parsedData },
+            //   };
+            //   Axios(config).then(res => {
+            //     console.log(res);
+            //     setParsedBooks(res.data.data);
+            //   });
+            // }, 500);
+          })
           .catch(error => console.error(error));
       }
     } catch (error) {
@@ -68,20 +84,27 @@ export default function UploadBook() {
     }
   };
   const addParsedBoooks = () => {
-    return responseData.map((pendingBook, id) => (
-      <div key={id}>
-        <div>
-          <img src='' alt='' />
+    if (parsedBooks) {
+      return parsedBooks.map((pendingBook, id) => (
+        <div className='parsedBook' key={id}>
+          <div className='parsedBook__image'>
+            <img src={pendingBook.coverURL} alt='book cover' />
+          </div>
+          <AddBook
+            pendingBookData={pendingBook}
+            ebook={true}
+            clearBook={clearBook}
+            bookId={id}
+          />
         </div>
-        <AddBook pendingBookData={pendingBook} />
-      </div>
-    ));
+      ));
+    }
   };
   return (
     <div className='upload'>
       {form()}
       {fileData()}
-      {/* {addParsedBoooks()} */}
+      {addParsedBoooks()}
     </div>
   );
 }

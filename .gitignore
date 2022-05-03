@@ -31,3 +31,4 @@ epub_parser
 server/uploaded_books
 templates
 data
+server/global_variables.js

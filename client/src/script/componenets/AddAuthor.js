@@ -9,7 +9,7 @@ function AddAuthor(props) {
   const [birthDate, setBirthDate] = useState('');
   const [authors, setAuthors] = useState('');
 
-  const { error, loading, data } = useQuery(LOAD_AUTHORS);
+  const { error, loading, data, refetch } = useQuery(LOAD_AUTHORS);
   useEffect(() => {
     if (data) {
       setAuthors(data.authors);
@@ -64,6 +64,7 @@ function AddAuthor(props) {
         birthDate: isNaN(birthDate) ? alert('') : birthDate,
       },
     });
+    refetch();
   };
 
   return (

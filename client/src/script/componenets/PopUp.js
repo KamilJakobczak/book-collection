@@ -13,7 +13,14 @@ function PopUp(props) {
           <AddPublisher publisherName={props.publisherName} />
         ) : null}
       </div>
-      <button className='popUp_closeButton' onClick={props.closePopUp}>
+      <button
+        className='popUp_closeButton'
+        onClick={() => {
+          props.closePopUp();
+          props.refetchAuthors();
+          props.refetchPublishers();
+        }}
+      >
         X
       </button>
     </div>

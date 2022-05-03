@@ -11,7 +11,7 @@ function AddPublisher(props) {
 
   const [publishers, setPublishers] = useState('');
 
-  const { error, loading, data } = useQuery(LOAD_PUBLISHERS);
+  const { error, loading, data, refetch } = useQuery(LOAD_PUBLISHERS);
   useEffect(() => {
     if (data) {
       setPublishers(data.publishers);
@@ -52,6 +52,7 @@ function AddPublisher(props) {
             website: website,
           },
         });
+        refetch();
       } else alert('This author already exists');
     }
   };
