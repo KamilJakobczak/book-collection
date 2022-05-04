@@ -61,11 +61,6 @@ const isFileValid = file => {
   }
   return true;
 };
-async function getFileMeta(id) {
-  const data = fs.readFileSync(`./uploaded_books/data/${id}.json`);
-  const dataParsed = JSON.parse(data);
-  return dataParsed;
-}
 
 app.post('/uploads', async (req, res) => {
   console.log('dotarło');
@@ -169,28 +164,11 @@ app.post('/uploads', async (req, res) => {
   });
 });
 
-// app.get('/uploads/meta', async (req, res) => {
-//   const id = req.query.getData;
-//   const returnData = await getFileMeta(id);
-//   res.status(200).json({
-//     status: 'success',
-//     data: returnData,
-//   });
-// });
-
 app.get('/get/image/:id', async (req, res) => {
-  // const image = fs.readFileSync(`${imagesFolder}/${req.query.imageId}.jpg`);
-  // const buffer = image.toString('base64');
   const name = req.params.id;
   const filepath = path.join(imagesFolder, name);
-  // console.log(req);
+
   res.sendFile(filepath);
-  // res.status(200).json(req.body);
-  // res.status(200).json({
-  //   msg: 'success',
-  //   filepath,
-  // });
-  // return;
 });
 
 mongoose.connect(
@@ -201,11 +179,6 @@ mongoose.connection.once('open', () => {
   console.log('database connected');
 });
 
-// v1.get('http://localhost:4000/api', (req, res) => {
-//   res.status(200).send('Successful');
-//   console.log(res);
-// });
-
 app.use(
   '/graphql',
   graphqlHTTP({
@@ -213,11 +186,3 @@ app.use(
     graphiql: true,
   })
 );
-
-// axios({
-//   method: 'post',
-//   url: '/api/file',
-//   responseType: '',
-// }).then(function (response) {
-//   console.log(response);
-// });

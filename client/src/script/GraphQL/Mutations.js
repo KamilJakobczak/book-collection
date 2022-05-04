@@ -34,6 +34,7 @@ export const ADD_BOOK = gql`
       buyPrice: $buyPrice
     ) {
       title
+      id
     }
   }
 `;

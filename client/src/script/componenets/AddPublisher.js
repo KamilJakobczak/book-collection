@@ -8,6 +8,8 @@ function AddPublisher(props) {
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [website, setWebsite] = useState('');
+  const [visible, setVisible] = useState(true);
+  const [addedPublisher, setAddedPublisher] = useState('');
 
   const [publishers, setPublishers] = useState('');
 
@@ -24,6 +26,11 @@ function AddPublisher(props) {
       setAddress('');
       setCity('');
       setWebsite('');
+      refetch();
+      setAddedPublisher(data.addPublisher.name);
+      if (window.location.href !== 'http://localhost:3000/newpublisher') {
+        setVisible(false);
+      }
     },
   });
 
@@ -52,39 +59,69 @@ function AddPublisher(props) {
             website: website,
           },
         });
-        refetch();
       } else alert('This author already exists');
     }
   };
 
-  return (
-    <form className='addPublisher'>
-      <div className='form_element'>
-        <label htmlFor='name'>Name: </label>
-        <input id='name' type='text' required onChange={e => handleName(e)} />
+  const form = () => {
+    return (
+      <form className='addPublisher'>
+        <div className='form_element'>
+          <label htmlFor='name'>Name: </label>
+          <input
+            id='name'
+            type='text'
+            value={name}
+            autoComplete='off'
+            required
+            onChange={e => handleName(e)}
+          />
+        </div>
+        <div className='form_element'>
+          <label htmlFor='address'>Address: </label>
+          <input
+            id='address'
+            type='text'
+            autoComplete='off'
+            value={address}
+            onChange={e => setAddress(e.target.value)}
+          />
+        </div>
+        <div className='form_element'>
+          <label htmlFor='city'>City: </label>
+          <input
+            id='city'
+            type='text'
+            autoComplete='off'
+            value={city}
+            onChange={e => setCity(e.target.value)}
+          />
+        </div>
+        <div className='form_element'>
+          <label htmlFor='website'>Website: </label>
+          <input
+            id='website'
+            type='text'
+            autoComplete='off'
+            value={website}
+            onChange={e => setWebsite(e.target.value)}
+          />
+        </div>
+        <button onClick={e => handleSubmit(e)}>Add publisher!</button>
+      </form>
+    );
+  };
+  const uploadedPublisher = () => {
+    setTimeout(() => {
+      setVisible(true);
+    }, 3000);
+    return (
+      <div className='mutation_announcement'>
+        <h3>{addedPublisher} successfully added!</h3>
       </div>
-      <div className='form_element'>
-        <label htmlFor='address'>Address: </label>
-        <input
-          id='address'
-          type='text'
-          onChange={e => setAddress(e.target.value)}
-        />
-      </div>
-      <div className='form_element'>
-        <label htmlFor='city'>City: </label>
-        <input id='city' type='text' onChange={e => setCity(e.target.value)} />
-      </div>
-      <div className='form_element'>
-        <label htmlFor='website'>Website: </label>
-        <input
-          id='website'
-          type='text'
-          onChange={e => setWebsite(e.target.value)}
-        />
-      </div>
-      <button onClick={e => handleSubmit(e)}>Add publisher!</button>
-    </form>
-  );
+    );
+  };
+
+  return visible === true ? form() : uploadedPublisher();
 }
 export default AddPublisher;

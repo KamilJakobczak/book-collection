@@ -6,31 +6,43 @@ import PopUp from './PopUp';
 
 function AddBook(props) {
   const pendingBook = props.pendingBookData;
-
   const clearBook = props.clearBook;
   const bookId = props.bookId;
+
+  const [visible, setVisible] = useState(true);
+  const [addedBook, setAddedBook] = useState('');
   // variables
-  const [title, setTitle] = useState(pendingBook.title);
-  const [language, setLanguage] = useState(pendingBook.language);
+  const [title, setTitle] = useState(
+    pendingBook === undefined ? '' : pendingBook.title
+  );
+  const [language, setLanguage] = useState(
+    pendingBook === undefined ? '' : pendingBook.language
+  );
   const [genre, setGenre] = useState('');
   const [pages, setPages] = useState('');
   const [authorId, setAuthorId] = useState('');
   const [publisherId, setPublisherId] = useState('');
   const [rating, setRating] = useState('');
   const [cover, setCover] = useState(props.ebook === true ? 'eBook' : '');
-  const [isbn, setIsbn] = useState(pendingBook.ISBN ? pendingBook.ISBN : '');
+  const [isbn, setIsbn] = useState(
+    pendingBook === undefined ? '' : pendingBook.ISBN
+  );
   const [firstEdition, setFirstEdition] = useState('');
   const [myEdition, setMyEdition] = useState('');
   const [status, setStatus] = useState('');
   const [currency, setCurrency] = useState('pln');
   const [buyPrice, setBuyPrice] = useState(0);
 
-  const [authorName, setAuthorName] = useState(pendingBook.author);
-  const [publisherName, setPublisherName] = useState(pendingBook.publisher);
+  const [authorName, setAuthorName] = useState(
+    pendingBook === undefined ? '' : pendingBook.author
+  );
+  const [publisherName, setPublisherName] = useState(
+    pendingBook === undefined ? '' : pendingBook.publisher
+  );
   const [authors, setAuthors] = useState([]);
   const [publishers, setPublishers] = useState([]);
 
-  const [popUpFlag, setPopUpFlag] = useState(0);
+  const [popUpFlag, setPopUpFlag] = useState(1);
 
   //loading publishers
   const {
@@ -149,6 +161,7 @@ function AddBook(props) {
   };
 
   //add a new book
+
   const [addBook, { error }] = useMutation(ADD_BOOK, {
     onCompleted(data) {
       setTitle('');
@@ -165,6 +178,14 @@ function AddBook(props) {
       setStatus('');
       setCurrency('');
       setBuyPrice('');
+      setAuthorName('');
+      setPublisherName('');
+
+      clearBook(bookId);
+      setAddedBook(data.addBook.title);
+      refetch();
+      refetchP();
+      setVisible(false);
     },
   });
 
@@ -216,7 +237,7 @@ function AddBook(props) {
           buyPrice: buyPrice,
         },
       });
-      props.clearBook(bookId);
+      // props.clearBook(bookId);
     } else {
       document.body.classList.add('blur');
       setPopUpFlag(1);
@@ -229,17 +250,8 @@ function AddBook(props) {
   if (err) return err;
   if (errP) return errP;
   // console.log(authors);
-  return (
-    <>
-      {popUpFlag === 1 ? (
-        <PopUp
-          closePopUp={popUpClose}
-          authorName={authorName}
-          publisherName={publisherName}
-          refetchAuthors={refetch}
-          refetchPublishers={refetchP}
-        />
-      ) : null}
+  const form = () => {
+    return (
       <form id='form_addBook' className='form_addBook'>
         <div className='form_element'>
           <label htmlFor='title'>Title: </label>
@@ -451,6 +463,29 @@ function AddBook(props) {
           <button onClick={createBook}>Add book!</button>
         </div>
       </form>
+    );
+  };
+  const uploadedBook = () => {
+    setTimeout(() => {
+      setVisible(true);
+    }, 3000);
+    return (
+      <div className='mutation_announcement'>
+        <h3>{addedBook} successfully added!</h3>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      {popUpFlag === 1 ? (
+        <PopUp
+          closePopUp={popUpClose}
+          authorName={authorName}
+          publisherName={publisherName}
+        />
+      ) : null}
+      {visible === true ? form() : uploadedBook()}
     </>
   );
 }

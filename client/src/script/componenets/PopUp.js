@@ -17,8 +17,6 @@ function PopUp(props) {
         className='popUp_closeButton'
         onClick={() => {
           props.closePopUp();
-          props.refetchAuthors();
-          props.refetchPublishers();
         }}
       >
         X

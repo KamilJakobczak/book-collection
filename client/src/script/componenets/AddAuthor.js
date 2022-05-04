@@ -8,6 +8,9 @@ function AddAuthor(props) {
   const [nationality, setNationality] = useState('');
   const [birthDate, setBirthDate] = useState('');
   const [authors, setAuthors] = useState('');
+  const [addedAuthor, setAddedAuthor] = useState('');
+
+  const [visible, setVisible] = useState(true);
 
   const { error, loading, data, refetch } = useQuery(LOAD_AUTHORS);
   useEffect(() => {
@@ -21,6 +24,9 @@ function AddAuthor(props) {
       setName('');
       setNationality('');
       setBirthDate('');
+      refetch();
+      setAddedAuthor(data.addAuthor.name);
+      setVisible(false);
     },
   });
 
@@ -56,7 +62,7 @@ function AddAuthor(props) {
     const isAuthor = authors.findIndex(
       author => author.name.toLowerCase() === name.toLowerCase()
     );
-    console.log(isAuthor);
+
     addAuthor({
       variables: {
         name: isAuthor > 0 ? alert('This author already exists!') : name,
@@ -64,37 +70,62 @@ function AddAuthor(props) {
         birthDate: isNaN(birthDate) ? alert('') : birthDate,
       },
     });
-    refetch();
   };
 
-  return (
-    <form className='addAuthor'>
-      <div className='form_element'>
-        <label htmlFor='name'>Name: </label>
-        <input id='name' type='text' required onChange={e => handleAuthor(e)} />
+  const form = () => {
+    return (
+      <form className='addAuthor'>
+        <div className='form_element'>
+          <label htmlFor='name'>Name: </label>
+          <input
+            id='name'
+            type='text'
+            autoComplete='off'
+            value={name}
+            required
+            onChange={e => handleAuthor(e)}
+          />
+        </div>
+        <div className='form_element'>
+          <label htmlFor='nationality'>Nationality: </label>
+          <input
+            id='nationality'
+            type='text'
+            autoComplete='off'
+            value={nationality}
+            onChange={e => {
+              setNationality(e.target.value);
+            }}
+          />
+        </div>
+        <div className='form_element'>
+          <label htmlFor='birthDate'>Year of birth: </label>
+          <input
+            id='birthDate'
+            type='text'
+            autoComplete='off'
+            value={birthDate}
+            minLength='1'
+            maxLength='5'
+            onChange={e => handleBirthDate(e)}
+          />
+        </div>
+        <button onClick={handleSubmit}>Add author!</button>
+      </form>
+    );
+  };
+
+  const uploadedAuthor = () => {
+    setTimeout(() => {
+      setVisible(true);
+    }, 3000);
+    return (
+      <div className='mutation_announcement'>
+        <h3>{addedAuthor} successfully added!</h3>
       </div>
-      <div className='form_element'>
-        <label htmlFor='nationality'>Nationality: </label>
-        <input
-          id='nationality'
-          type='text'
-          onChange={e => {
-            setNationality(e.target.value);
-          }}
-        />
-      </div>
-      <div className='form_element'>
-        <label htmlFor='birthDate'>Year of birth: </label>
-        <input
-          id='birthDate'
-          type='text'
-          minLength='1'
-          maxLength='5'
-          onChange={e => handleBirthDate(e)}
-        />
-      </div>
-      <button onClick={handleSubmit}>Add author!</button>
-    </form>
-  );
+    );
+  };
+
+  return visible === true ? form() : uploadedAuthor();
 }
 export default AddAuthor;

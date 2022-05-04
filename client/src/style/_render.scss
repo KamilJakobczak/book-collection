@@ -1,3 +1,9 @@
 main {
   flex-grow: 1;
+  .mutation_announcment {
+    width: 100%;
+    h3 {
+      text-align: center;
+    }
+  }
 }
