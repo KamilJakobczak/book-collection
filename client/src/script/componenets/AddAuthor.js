@@ -116,6 +116,7 @@ function AddAuthor(props) {
   };
 
   const uploadedAuthor = () => {
+    props.authorRefetch();
     setTimeout(() => {
       setVisible(true);
     }, 3000);

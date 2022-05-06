@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
 import { ADD_BOOK } from '../GraphQL/Mutations';
 import { LOAD_AUTHORS, LOAD_PUBLISHERS } from '../GraphQL/Queries';
 import { useQuery, useMutation } from '@apollo/client';
@@ -20,12 +21,12 @@ function AddBook(props) {
   );
   const [genre, setGenre] = useState('');
   const [pages, setPages] = useState('');
-  const [authorId, setAuthorId] = useState('');
-  const [publisherId, setPublisherId] = useState('');
+  // const [authorId, setAuthorId] = useState('');
+  // const [publisherId, setPublisherId] = useState('');
   const [rating, setRating] = useState('');
   const [cover, setCover] = useState(props.ebook === true ? 'eBook' : '');
   const [isbn, setIsbn] = useState(
-    pendingBook === undefined ? '' : pendingBook.ISBN
+    pendingBook.ISBN === '' ? '' : pendingBook.ISBN
   );
   const [firstEdition, setFirstEdition] = useState('');
   const [myEdition, setMyEdition] = useState('');
@@ -42,7 +43,7 @@ function AddBook(props) {
   const [authors, setAuthors] = useState([]);
   const [publishers, setPublishers] = useState([]);
 
-  const [popUpFlag, setPopUpFlag] = useState(1);
+  const [popUpFlag, setPopUpFlag] = useState(0);
 
   //loading publishers
   const {
@@ -67,29 +68,21 @@ function AddBook(props) {
   }, [data]);
 
   // handle functions and validation
-  const handleAuthor = e => {
-    const name = e.target.value;
-    authors.forEach(el => {
-      if (name === el.name) {
-        setAuthorId(el.id);
-      } else {
-        setAuthorId('');
-        setAuthorName(name);
+  const checkAuthor = () => {
+    for (let i = 0; i < authors.length; i++) {
+      if (authorName.toLowerCase() === authors[i].name.toLowerCase()) {
+        return authors[i].id;
       }
-    });
-    console.log(authorId);
+    }
   };
-  const handlePublisher = e => {
-    const name = e.target.value;
-    publishers.forEach(el => {
-      if (name === el.name) {
-        setPublisherId(el.id);
-      } else {
-        setPublisherId('');
-        setPublisherName(name);
+  const checkPublisher = () => {
+    for (let i = 0; i < publishers.length; i++) {
+      if (publisherName.toLowerCase() === publishers[i].name.toLowerCase()) {
+        return publishers[i].id;
       }
-    });
-    console.log(publisherId);
+    }
+
+    publishers.forEach(el => {});
   };
   const handleNumberFields = e => {
     const value = e.target.value;
@@ -154,11 +147,12 @@ function AddBook(props) {
   };
 
   // closing popUp
-  const popUpClose = () => {
-    refetch();
-    refetchP();
+  function popUpClose() {
+    console.log('zamykam popup');
+    // refetch();
+    // refetchP();
     setPopUpFlag(0);
-  };
+  }
 
   //add a new book
 
@@ -168,8 +162,8 @@ function AddBook(props) {
       setLanguage('');
       setGenre('');
       setPages('');
-      setAuthorId('');
-      setPublisherId('');
+      // setAuthorId('');
+      // setPublisherId('');
       setRating('');
       setCover('');
       setIsbn('');
@@ -186,11 +180,20 @@ function AddBook(props) {
       refetch();
       refetchP();
       setVisible(false);
+      Axios.post('http://localhost:4000/post/images', {
+        localId: pendingBook.localId,
+        bookId: data.addBook.id,
+        // title: data.addBook.title,
+      }).then(response => {
+        console.log(response);
+      });
     },
   });
 
   const createBook = e => {
     e.preventDefault();
+    const authorId = checkAuthor();
+    const publisherId = checkPublisher();
 
     const numberValues = [
       { name: 'pages', value: pages },
@@ -207,9 +210,9 @@ function AddBook(props) {
       }
     });
 
-    // if (status === 'true') setRead(true);
-    // if (status === 'false') setRead(false);
-    // if (status !== Boolean) alert('Pick something');
+    if (status === 'true') setStatus(true);
+    if (status === 'false') setStatus(false);
+    if (status !== Boolean) alert('Pick something');
     if (errors.length > 0) {
       const errorsList = errors.join(', ');
       alert(
@@ -217,7 +220,7 @@ function AddBook(props) {
       );
       return;
     }
-    // console.log(authorId, publisherId);
+
     if (authorId !== '' && publisherId !== '') {
       addBook({
         variables: {
@@ -310,7 +313,10 @@ function AddBook(props) {
             value={authorName}
             list='authors-list'
             name='authors-list'
-            onChange={e => handleAuthor(e)}
+            onChange={e => {
+              setAuthorName(e.target.value);
+              // handleAuthor(e);
+            }}
           />
           <datalist id='authors-list'>
             {authors.map(author => (
@@ -330,7 +336,8 @@ function AddBook(props) {
             list='publishers-list'
             name='publishers-list'
             onChange={e => {
-              handlePublisher(e);
+              setPublisherName(e.target.value);
+              // handlePublisher(e);
             }}
           />
           <datalist id='publishers-list'>
@@ -480,7 +487,9 @@ function AddBook(props) {
     <>
       {popUpFlag === 1 ? (
         <PopUp
-          closePopUp={popUpClose}
+          closePopUp={popUpClose.bind(this)}
+          authorRefetch={refetch}
+          publisherRefetch={refetchP}
           authorName={authorName}
           publisherName={publisherName}
         />

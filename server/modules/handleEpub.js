@@ -2,60 +2,48 @@ const bluebird = require('bluebird');
 const checkLanguage = require('./checkLanguage');
 const fs = bluebird.promisifyAll(require('fs-extra'));
 const EPub = require('epub');
-const sharp = require('sharp');
+
+const logger = require('../global_variables');
 
 // const path = require('path');
 
 // const dataFile = fs.readFileSync(path.join(__dirname, 'data.json'));
 // let dataRead = JSON.parse(dataFile);
 
-async function resizer(file) {
+async function imageExtraction(
+  cover,
+  title,
+  epub,
+  imagesFolder,
+  id,
+  lastImage
+) {
   return new Promise(function (resolve, reject) {
-    const resize = size =>
-      sharp(`${file}.jpg`)
-        .resize({ width: size })
-        .toFile(`${file}-${size}.jpg`);
-
-    Promise.all([1000, 600, 300].map(resize)).then(() => {
-      console.log('complete');
-      resolve('success');
-    });
-    //   sharp(file)
-    //     .resize({ width: 300 })
-    //     .toFile(`${file}-small.jpg`)
-    //     .then(function (newFileInfo) {
-    //       console.log('successful resizing');
-    //       resolve('success');
-    //     })
-    //     .catch(function (err) {
-    //       console.log('error occured');
-    //     });
-    // });
-  });
-}
-
-async function imageExtraction(cover, title, epub, imagesFolder, id) {
-  if (cover === undefined) {
-    console.log(`${title} has no cover`);
-  } else {
-    return new Promise(function (resolve, reject) {
+    if (cover === undefined) {
+      console.log(`${title} has no cover`);
+    } else {
       epub.getImage(`${cover}`, async function (error, img, mimeType) {
         fs.writeFileAsync(
           `${imagesFolder}/${id}.jpg`,
           img,
-          function (err, written) {
-            if (err) console.log(err);
-            else {
+          async function (err, written) {
+            if (err) {
+              console.log(err);
+              reject(false);
+            } else {
               console.log('Successfully written');
-              resolve(`${imagesFolder}/${id}`);
+
+              if (lastImage) {
+                resolve(true);
+              }
             }
           }
         );
       });
-    });
-  }
+    }
+  });
 }
-module.exports = function async(
+module.exports = async function (
   uploadedFiles,
   ids,
   imagesFolder,
@@ -95,22 +83,23 @@ module.exports = function async(
           genre: genre,
           ISBN: ISBN !== undefined ? ISBN : null,
           language: language,
-          coverURL: `http://localhost:4000/get/image/${id}-300.jpg`,
+          localId: id,
+          coverURL: `${host}get/image/${id}`,
           publisher: publisher,
           title: title,
         };
         parsedBooks.push(bookData);
-
+        const lastImage = i === uploadedFiles.length - 1 ? true : false;
         const image = await imageExtraction(
           cover,
           title,
           epub,
           imagesFolder,
-          id
+          id,
+          lastImage
         );
-        const resize = await resizer(image);
 
-        if (i === uploadedFiles.length - 1) {
+        if (i === uploadedFiles.length - 1 && image) {
           resolve(parsedBooks);
         }
       });

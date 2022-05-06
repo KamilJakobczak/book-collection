@@ -7,10 +7,16 @@ function PopUp(props) {
     <div className='popUp'>
       <div className='popUp_forms'>
         {props.authorName !== '' ? (
-          <AddAuthor authorName={props.authorName} />
+          <AddAuthor
+            authorRefetch={props.authorRefetch}
+            authorName={props.authorName}
+          />
         ) : null}
         {props.publisherName !== '' ? (
-          <AddPublisher publisherName={props.publisherName} />
+          <AddPublisher
+            publisherRefetch={props.publisherRefetch}
+            publisherName={props.publisherName}
+          />
         ) : null}
       </div>
       <button

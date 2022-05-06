@@ -112,6 +112,7 @@ function AddPublisher(props) {
     );
   };
   const uploadedPublisher = () => {
+    props.publisherRefetch();
     setTimeout(() => {
       setVisible(true);
     }, 3000);

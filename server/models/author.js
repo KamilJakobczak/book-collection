@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const authorSchema = new Schema({
-  name: String,
+  name: { type: String, required: true, maxlength: 100 },
   nationality: String,
   birthDate: Number,
 });

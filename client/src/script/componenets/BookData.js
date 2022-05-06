@@ -34,7 +34,9 @@ export default function BookData(props) {
       </div>
       <div className='bookData_element'>
         <p className='key'>Rating:</p>
-        <p className='value'>{data.book.rating}</p>
+        <p className='value'>
+          {data.book.rating === -1 ? 'Not rated' : data.book.rating}
+        </p>
       </div>
       <div className='bookData_element'>
         <p className='key'>Cover:</p>
